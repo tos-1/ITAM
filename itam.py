@@ -388,12 +388,3 @@ class ITAM:
         norm = self.boxsize**3/self.ng**6
 
         return ps * norm
-
-
-if __name__== "__main__":
-     itm = ITAM(boxsize=256.,ng=256, beta=0.5,Rth=1.,eps=0.05,Deps=0.001,
-            pathto_pk='data_itam/planck_pk.txt',pathto_ppf = 'data_itam/_ppf.txt',saveto='data_itam/',
-            pathto_rescale='data_itam/rescale_factor.txt' , plotty=1)
-
-     itm.make_covariance(nreal=3,parallel=0,cores=2)
-     #itm.make_covariance(nreal=3,parallel=1,cores=2)

@@ -11,7 +11,10 @@
 '''
 
 import numpy as N
-from classy import Class
+try:
+    from classy import Class
+except:
+    raise ImportError('CLASS not installed')
 from scipy.stats import rankdata
 from scipy.integrate import quad
 
@@ -105,13 +108,14 @@ def lookup_Pk(cosmology='planck',nonlinear=0):
     return
 
 
-def lookup_ppf(nsamples=1e+05, boxsize=256.0, Rth=1.,density=None, pathpk='data_itam/planck_pk.txt',  saveto_ppf='data_itam/_ppf.txt',
+def lookup_ppf(nsamples=100000, boxsize=256.0, Rth=1.,density=None, pathpk='data_itam/planck_pk.txt',  saveto_ppf='data_itam/_ppf.txt',
         saveto_rescale='data_itam/rescale_factor.txt'):
     '''
+    This function writes a lookup table of the inverse CDF (percentile point function) of the target simulation.
     Inputs::
       nsamples: the number of points at which ppf is sampled\.
       density: path to a binary with the unsmoothed density field.
-      Rth: smoothing scale of the Gaussian kernel.
+      Rth: smoothing scale of the Gaussian kernel, to smooth the density field.
     Outputs::
       - Lookup table for the point percent function of density field of simulation
       - rescale factor to make variance of PDF and Pk consistent
@@ -194,8 +198,3 @@ def getkgrid(boxsize,ng):
     k = N.sqrt(kx**2+ky**2+kz**2)
 
     return k
-
-if __name__ == "__main__":
-    lookup_Pk(cosmology='planck',nonlinear=1)
-    #lookup_ppf(nsamples=1e+05, boxsize=256.0, Rth=1.0,density='data_itam/density.npy', pathpk='data_itam/planck_pk.txt',  saveto_ppf='data_itam/_ppf.txt',
-    #    saveto_rescale='data_itam/rescale_factor.txt')
