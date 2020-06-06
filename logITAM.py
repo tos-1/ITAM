@@ -25,7 +25,7 @@ class logITAM:
     """
 
     def __init__( self , boxsize=256., ng=256 , Rth = 2. ,  nmax=10000 , stepsize=1e-04 , beta=1.0 , eps = 0.001, Deps=0.001, plotty=0,
-            pathto_pk=None):
+            pathto_linpk=None, pathto_pk=None):
 
         self.nmax = nmax            # for hankel transform
         self.stepsize = stepsize    # for hankel transform
@@ -46,6 +46,17 @@ class logITAM:
         except:
             raise ValueError("Select correctly the path to lookup table of target power spectrum")
 
+        if not pathto_linpk==None:
+            self.flag_lin = True
+            print('you specified the linear power spectrum for the initilization')
+            if not os.path.exists(pathto_linpk):
+                raise ValueError("The path to the linear power spectrum does not exist")
+            else:
+                kbins,pk_l = N.loadtxt(pathto_pk)
+        else:
+            self.flag_lin = False
+            pass
+
         cellsize = boxsize/float(ng)
         lmin = boxsize/float(ng)/10.
         lmax = boxsize
@@ -56,6 +67,12 @@ class logITAM:
         self.pk = 10.**N.interp(N.log10(self.k),N.log10(kbins),N.log10(pk),left=0.,right=0.)
         Wk2 = N.exp(-self.k*self.k*Rth*Rth)
         self.pk *= Wk2
+
+        if self.flag_lin == True:
+            pk_l *= correction
+            self.pk_l = 10.**N.interp(N.log10(self.k),N.log10(kbins),N.log10(pk_l),left=0.,right=0.)
+            Wk2 = N.exp(-self.k*self.k*Rth*Rth)
+            self.pk_l *= Wk2
 
         self.pk_g , self.pk_ng = self.itam()
 
@@ -91,7 +108,11 @@ class logITAM:
         ''' the main algorithm '''
 
         target_s = self.pk
-        s_g_iterate = self.pk
+
+        if self.flag_lin == True:
+            s_g_iterate = self.pk_l
+        else:
+            s_g_iterate = self.pk
 
         eps0 = 1.
         eps1 = 1.
