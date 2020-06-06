@@ -163,7 +163,7 @@ def test_hankel(boxsize=256., ng=256 , Rth = 2. ,  nmax=10000 , stepsize=1e-04 )
     lmax = boxsize
     kmin = 2.*N.pi/lmax
     kmax = 2.*N.pi/lmin
-    print 'kny=',N.pi/boxsize*float(ng)
+    print('kny=',N.pi/boxsize*ng)
 
     k = N.logspace( N.log10(kmin) , N.log10(kmax) , 400 )    # spectral grid
     r = N.logspace( N.log10(lmin) , N.log10(lmax) , 400 )    # physical grid
