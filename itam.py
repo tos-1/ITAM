@@ -75,8 +75,12 @@ class ITAM:
         else:
             correction = N.loadtxt(pathto_rescale)
 
-        if not os.path.exists(saveto):
-            raise ValueError("create a folder where to save the results")
+        if not saveto==None:
+            if not os.path.exists(saveto):
+                raise ValueError("The 'saveto' folder that you specified does not exist")
+        else:
+            raise ValueError("You did not specify the folder where to save the results")
+
 
         pk *= correction
         cellsize = boxsize/float(ng)

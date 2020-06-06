@@ -44,7 +44,7 @@ class logITAM:
         try:
             kbins,pk = N.loadtxt(pathto_pk)
         except:
-            ValueError("Select correctly the path to lookup table of target power spectrum")
+            raise ValueError("Select correctly the path to lookup table of target power spectrum")
 
         cellsize = boxsize/float(ng)
         lmin = boxsize/float(ng)/10.
