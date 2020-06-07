@@ -225,12 +225,12 @@ class ITAM:
         ''' It returns a grid of k in fft format '''
 
         kmin = 2*N.pi/N.float(self.boxsize)
-        sh = (self.ng,self.ng,self.ng/2+1)
+        sh = (self.ng,self.ng,self.ng//2+1)
         kx,ky,kz = N.mgrid[0:sh[0],0:sh[1],0:sh[2]].astype(N.float64)
 
-        kx[N.where(kx > self.ng/2)] -= self.ng
-        ky[N.where(ky > self.ng/2)] -= self.ng
-        kz[N.where(kz > self.ng/2)] -= self.ng
+        kx[N.where(kx > self.ng//2)] -= self.ng
+        ky[N.where(ky > self.ng//2)] -= self.ng
+        kz[N.where(kz > self.ng//2)] -= self.ng
 
         kx *= kmin
         ky *= kmin

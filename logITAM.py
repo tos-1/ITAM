@@ -206,12 +206,12 @@ class logITAM:
         ''' It returns a grid of k in fft format '''
 
         kmin = 2*N.pi/N.float(self.boxsize)
-        sh = (self.ng,self.ng,self.ng/2+1)
+        sh = (self.ng,self.ng,self.ng//2+1)
         kx,ky,kz = N.mgrid[0:sh[0],0:sh[1],0:sh[2]].astype(N.float64)
 
-        kx[N.where(kx > self.ng/2)] -= self.ng
-        ky[N.where(ky > self.ng/2)] -= self.ng
-        kz[N.where(kz > self.ng/2)] -= self.ng
+        kx[N.where(kx > self.ng//2)] -= self.ng
+        ky[N.where(ky > self.ng//2)] -= self.ng
+        kz[N.where(kz > self.ng//2)] -= self.ng
 
         kx *= kmin
         ky *= kmin
@@ -254,15 +254,22 @@ class logITAM:
         dk = N.reshape(dk,shc)
 
         # Hermitian symmetric: dk(-k) = conjugate(dk(k))
-        dk[self.ng/2+1:,1:,0]= N.conj(N.fliplr(N.flipud(dk[1:self.ng/2,1:,0])))
-        dk[self.ng/2+1:,0,0] = N.conj(dk[self.ng/2-1:0:-1,0,0])
-        dk[0,self.ng/2+1:,0] = N.conj(dk[0,self.ng/2-1:0:-1,0])
-        dk[self.ng/2,self.ng/2+1:,0] = N.conj(dk[self.ng/2,self.ng/2-1:0:-1,0])
+        # Hermitian symmetric: dk(-k) = conjugate(dk(k))
+        dk[self.ng // 2 + 1:, 1:,
+            0] = N.conj(N.fliplr(N.flipud(dk[1:self.ng // 2, 1:, 0])))
+        dk[self.ng // 2 + 1:, 0, 0] = N.conj(dk[self.ng // 2 - 1:0:-1, 0, 0])
+        dk[0, self.ng // 2 + 1:, 0] = N.conj(dk[0, self.ng // 2 - 1:0:-1, 0])
+        dk[self.ng // 2, self.ng // 2 + 1:,
+            0] = N.conj(dk[self.ng // 2, self.ng // 2 - 1:0:-1, 0])
 
-        dk[self.ng/2+1:,1:,self.ng/2]= N.conj(N.fliplr(N.flipud(dk[1:self.ng/2,1:,self.ng/2])))
-        dk[self.ng/2+1:,0,self.ng/2] = N.conj(dk[self.ng/2-1:0:-1,0,self.ng/2])
-        dk[0,self.ng/2+1:,self.ng/2] = N.conj(dk[0,self.ng/2-1:0:-1,self.ng/2])
-        dk[self.ng/2,self.ng/2+1:,self.ng/2] = N.conj(dk[self.ng/2,self.ng/2-1:0:-1,self.ng/2])
+        dk[self.ng // 2 + 1:, 1:, self.ng //
+            2] = N.conj(N.fliplr(N.flipud(dk[1:self.ng // 2, 1:, self.ng // 2])))
+        dk[self.ng // 2 + 1:, 0, self.ng //
+            2] = N.conj(dk[self.ng // 2 - 1:0:-1, 0, self.ng // 2])
+        dk[0, self.ng // 2 + 1:, self.ng //
+            2] = N.conj(dk[0, self.ng // 2 - 1:0:-1, self.ng // 2])
+        dk[self.ng // 2, self.ng // 2 + 1:, self.ng //
+            2] = N.conj(dk[self.ng // 2, self.ng // 2 - 1:0:-1, self.ng // 2])
 
         d_g = N.fft.irfftn(dk)
         print('mean of Gaussian field=',N.mean(d_g,axis=None))
