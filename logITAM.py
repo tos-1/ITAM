@@ -81,12 +81,6 @@ class logITAM:
         xi_g = N.log1p(xi_ng)
         self.pk_g_CJ = hank.xi_to_pk( xi_g , self.r , self.k , self.nmax , self.stepsize*10 )
 
-        ## Eq.20 case
-        #xi_g = hank.pk_to_xi( self.pk_g , self.r , self.k , self.nmax , self.stepsize )
-        #xi_ng = N.exp(xi_g[0])*(N.exp(xi_g)-1.)
-        #self.pk_ng_exact = hank.xi_to_pk( xi_ng , self.r , self.k , self.nmax , self.stepsize*10 )
-
-
         #self.test_realization(seed=31415)
 
         if plotty==1:
@@ -189,9 +183,6 @@ class logITAM:
         gn *= N.exp(-sigma2/2.)
         gn -= 1.
 
-        # Eq. 20
-        #gn -= N.exp(sigma2/2.)-1.
-
         gn = N.prod( gn, 1 )
 
         if not N.all( N.isfinite( gn ) ):
@@ -254,7 +245,6 @@ class logITAM:
         dk = N.reshape(dk,shc)
 
         # Hermitian symmetric: dk(-k) = conjugate(dk(k))
-        # Hermitian symmetric: dk(-k) = conjugate(dk(k))
         dk[self.ng // 2 + 1:, 1:,
             0] = N.conj(N.fliplr(N.flipud(dk[1:self.ng // 2, 1:, 0])))
         dk[self.ng // 2 + 1:, 0, 0] = N.conj(dk[self.ng // 2 - 1:0:-1, 0, 0])
@@ -272,15 +262,11 @@ class logITAM:
             2] = N.conj(dk[self.ng // 2, self.ng // 2 - 1:0:-1, self.ng // 2])
 
         d_g = N.fft.irfftn(dk)
-        print('mean of Gaussian field=',N.mean(d_g,axis=None))
         cdf = norm.cdf( d_g ,loc= N.mean(d_g), scale= N.std(d_g) )
         d_ng = lognorm.ppf( cdf , s = N.std(d_g) ,loc=0.0, scale=1.0)
 
         # Eq. 16
         d_ng *= N.exp(-N.var(d_g)/2.)
         d_ng -= 1.
-
-        # Eq. 20
-        #d_ng -= N.exp(N.var(d_g)/2.)
 
         return d_ng
