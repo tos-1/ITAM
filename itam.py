@@ -5,7 +5,6 @@ import itertools
 import warnings
 import matplotlib.pyplot as plt
 import time
-import pathos.pools as pp
 import os
 
 class ITAM:
@@ -320,7 +319,7 @@ class ITAM:
         return ps_g, ps_ng
 
 
-    def make_covariance(self,nreal=10,parallel=1,cores=2):
+    def make_covariance(self,nreal=10,cores=2):
         '''
         To make a test for the covariance matrix of power spectrum.
         Inputs::
@@ -328,6 +327,16 @@ class ITAM:
         Outputs::
           saves the power spectra and the kbins on files.
         '''
+        if cores > 1:
+            try:
+                import pathos.pools as pp
+                parallel_flag = True
+            except ImportError:
+                print('pathos not installed, using a single core')
+                parallel_flag = False
+        else:
+            parallel_flag = False
+
         # seeds
         seeds = N.arange(int(nreal))
         print('making', nreal, 'realizations')
@@ -347,7 +356,7 @@ class ITAM:
         # power spectra
         t0 = time.time()
 
-        if parallel==1:
+        if parallel_flag==True:
             print('implementing parallel execution with', cores, 'cores')
             pool = pp.ProcessPool(cores)
             ppp = pool.map( self.realPower, range(nreal) )
