@@ -9,4 +9,4 @@ The lookup.py module requires also CLASS (https://lesgourg.github.io/class_publi
 
 See the quickstart.ipynb notebook for an example and further details.
 
-If you find this code useful, please cite .........
+If you find this code useful, please cite https://doi.org/10.1016/j.probengmech.2011.04.003 and https://ui.adsabs.harvard.edu/abs/2020MNRAS.498.2663T/abstract
